@@ -3,6 +3,7 @@
   <component name="ChangeListManager">
     <list default="true" id="2b524dba-ff1b-4edc-9874-c6c71bc279fd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
+      <change beforePath="$PROJECT_DIR$/scripts/enterprisereplicator.sh" afterPath="$PROJECT_DIR$/scripts/enterprisereplicator.sh" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -17,8 +18,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="221">
-                <caret line="381" column="38" lean-forward="false" selection-start-line="381" selection-start-column="38" selection-end-line="381" selection-end-column="38" />
+              <first_editor relative-caret-position="233">
+                <caret line="540" column="1" lean-forward="false" selection-start-line="540" selection-start-column="1" selection-end-line="540" selection-end-column="1" />
                 <folding />
               </first_editor>
               <second_editor>
@@ -31,7 +32,7 @@
       <file leaf-file-name="LABORATORIO.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/LABORATORIO.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
+            <state relative-caret-position="-162">
               <caret line="96" column="56" lean-forward="false" selection-start-line="96" selection-start-column="56" selection-end-line="96" selection-end-column="56" />
               <folding />
             </state>
@@ -51,8 +52,8 @@
       <file leaf-file-name="enterprisereplicator.sh" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/scripts/enterprisereplicator.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1590">
-              <caret line="121" column="44" lean-forward="false" selection-start-line="121" selection-start-column="29" selection-end-line="121" selection-end-column="44" />
+            <state relative-caret-position="78">
+              <caret line="61" column="4" lean-forward="true" selection-start-line="61" selection-start-column="4" selection-end-line="63" selection-end-column="88" />
               <folding />
             </state>
           </provider>
@@ -92,6 +93,7 @@
       <find>create</find>
       <find>topicoreplicador</find>
       <find>topicreplicador</find>
+      <find>list</find>
     </findStrings>
     <replaceStrings>
       <replace>todo</replace>
@@ -430,7 +432,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/LABORATORIO.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
+        <state relative-caret-position="-162">
           <caret line="96" column="56" lean-forward="false" selection-start-line="96" selection-start-column="56" selection-end-line="96" selection-end-column="56" />
           <folding />
         </state>
@@ -438,8 +440,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/enterprisereplicator.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1590">
-          <caret line="121" column="44" lean-forward="false" selection-start-line="121" selection-start-column="29" selection-end-line="121" selection-end-column="44" />
+        <state relative-caret-position="78">
+          <caret line="61" column="4" lean-forward="true" selection-start-line="61" selection-start-column="4" selection-end-line="63" selection-end-column="88" />
           <folding />
         </state>
       </provider>
@@ -447,8 +449,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="221">
-            <caret line="381" column="38" lean-forward="false" selection-start-line="381" selection-start-column="38" selection-end-line="381" selection-end-column="38" />
+          <first_editor relative-caret-position="233">
+            <caret line="540" column="1" lean-forward="false" selection-start-line="540" selection-start-column="1" selection-end-line="540" selection-end-column="1" />
             <folding />
           </first_editor>
           <second_editor>

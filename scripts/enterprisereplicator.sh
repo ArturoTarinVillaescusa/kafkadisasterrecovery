@@ -135,7 +135,7 @@ producir () {
 
 consumir () {
     echo "Consumiendo los mensajes del tópico \"topicreplicador\" del $1 ..."
-    bash -c "docker exec -it $1_kafka-3_1 \
+    bash -c "docker exec -it dc1_kafka-3_1 \
                kafka-console-consumer \
                --topic topicreplicador  \
                     --property 'print.timestamp=true' \

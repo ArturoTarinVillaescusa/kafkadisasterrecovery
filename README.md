@@ -411,22 +411,150 @@
 ## 4-2-4 Enterprise Replicator disaster recovery test
 
         docker@docker:~/scripts$ ./LABORATORIO.sh borrar
+        Contenedores borrados
 
         docker@docker:~/scripts$ ./LABORATORIO.sh iniciar dc1
+
+        Creating dc1_zookeeper-3_1 ... done
+        Creating dc1_zookeeper-2_1 ... done
+        Creating dc1_zookeeper-1_1 ... done
+        Creating dc1_kafka-3_1     ... done
+        Creating dc1_kafka-1_1     ... done
+        Creating dc1_kafka-2_1     ... done
+        Creating dc2_replicator_1 ... done
+              Name                   Command            State              Ports
+        ------------------------------------------------------------------------------------
+        dc1_kafka-1_1       /etc/confluent/docker/run   Up      9092/tcp
+        dc1_kafka-2_1       /etc/confluent/docker/run   Up      9092/tcp
+        dc1_kafka-3_1       /etc/confluent/docker/run   Up      9092/tcp
+        dc1_zookeeper-1_1   /etc/confluent/docker/run   Up      2181/tcp, 2888/tcp, 3888/tcp
+        dc1_zookeeper-2_1   /etc/confluent/docker/run   Up      2181/tcp, 2888/tcp, 3888/tcp
+        dc1_zookeeper-3_1   /etc/confluent/docker/run   Up      2181/tcp, 2888/tcp, 3888/tcp
+              Name                  Command            State         Ports
+        -------------------------------------------------------------------------
+        dc2_replicator_1   /etc/confluent/docker/run   Up      8083/tcp, 9092/tcp
+        Configuramos MirrorMaker ...
+
+
+
+        $ ./enterprisereplicator.sh iniciarenterprisereplicator
+        Creamos el tópico "topicreplicador" en el dc1 ...
+        Created topic "topicreplicador".
+        Topic:topicreplicador	PartitionCount:3	ReplicationFactor:3	Configs:
+            Topic: topicreplicador	Partition: 0	Leader: 2	Replicas: 2,3,1	Isr: 2,3,1
+            Topic: topicreplicador	Partition: 1	Leader: 3	Replicas: 3,1,2	Isr: 3,1,2
+            Topic: topicreplicador	Partition: 2	Leader: 1	Replicas: 1,2,3	Isr: 1,2,3
+
+        Consultamos los nombres de los conectores que existen antes de crear ninguno. Debe retornarnos una lista vacía ...
+
+        []
+
+
+        Creamos el conector 'conector-replicador' llamando a Kafka Connect REST API. Obligamos a que se clonen las particiones      es decir, las particiones del tópico "topicreplicador" se replicarán en contenido y orden desde el Datacenter A al Datacenter B ...
+
+        {
+           "config" : {
+              "dest.zookeeper.connect" : "dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181",
+              "src.zookeeper.connect" : "dc1_zookeeper-1_1:2181,dc1_zookeeper-2_1:2181,dc1_zookeeper-3_1:2181",
+              "connector.class" : "io.confluent.connect.replicator.ReplicatorSourceConnector",
+              "topic.preserve.partitions" : "true",
+              "src.kafka.bootstrap.servers" : "dc1_kafka-1_1:9092,dc1_kafka-2_1:9092,dc1_kafka-3_1:9092",
+              "value.converter" : "io.confluent.connect.replicator.util.ByteArrayConverter",
+              "key.converter" : "io.confluent.connect.replicator.util.ByteArrayConverter",
+              "name" : "conector-replicador",
+              "topic.whitelist" : "topicreplicador"
+           },
+           "name" : "conector-replicador",
+           "tasks" : []
+        }
+
+        Comprobamos que Connector Replicator ha creado el tópico "topicreplicador" en Datacenter B ...
+
+        Error: No such container: dc2_kafka-2_1
+
+        Consultamos el estado del conector  "conector-replicador" ...
+
+        {
+           "name" : "conector-replicador",
+           "tasks" : [],
+           "connector" : {
+              "trace" : "org.I0Itec.zkclient.exception.ZkException: Unable to connect to dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181\n\tat org.I0Itec.zkclient.ZkConnection.connect(ZkConnection.java:72)\n\tat org.I0Itec.zkclient.ZkClient.connect(ZkClient.java:1228)\n\tat org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:157)\n\tat org.I0Itec.zkclient.ZkClient.<init>(ZkClient.java:131)\n\tat kafka.utils.ZkUtils$.createZkClientAndConnection(ZkUtils.scala:79)\n\tat kafka.utils.ZkUtils$.apply(ZkUtils.scala:61)\n\tat kafka.utils.ZkUtils.apply(ZkUtils.scala)\n\tat io.confluent.connect.replicator.ReplicatorSourceConnectorConfig.buildDestZkUtils(ReplicatorSourceConnectorConfig.java:365)\n\tat io.confluent.connect.replicator.ReplicatorSourceConnector.startOrVerifyTrialPeriod(ReplicatorSourceConnector.java:112)\n\tat io.confluent.connect.replicator.ReplicatorSourceConnector.start(ReplicatorSourceConnector.java:57)\n\tat org.apache.kafka.connect.runtime.WorkerConnector.doStart(WorkerConnector.java:100)\n\tat org.apache.kafka.connect.runtime.WorkerConnector.start(WorkerConnector.java:125)\n\tat org.apache.kafka.connect.runtime.WorkerConnector.transitionTo(WorkerConnector.java:182)\n\tat org.apache.kafka.connect.runtime.Worker.startConnector(Worker.java:183)\n\tat org.apache.kafka.connect.runtime.distributed.DistributedHerder.startConnector(DistributedHerder.java:876)\n\tat org.apache.kafka.connect.runtime.distributed.DistributedHerder.access$1200(DistributedHerder.java:101)\n\tat org.apache.kafka.connect.runtime.distributed.DistributedHerder$15.call(DistributedHerder.java:892)\n\tat org.apache.kafka.connect.runtime.distributed.DistributedHerder$15.call(DistributedHerder.java:888)\n\tat java.util.concurrent.FutureTask.run(FutureTask.java:266)\n\tat java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)\n\tat java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)\n\tat java.lang.Thread.run(Thread.java:745)\nCaused by: java.net.UnknownHostException: dc2_zookeeper-1_1: Name or service not known\n\tat java.net.Inet4AddressImpl.lookupAllHostAddr(Native Method)\n\tat java.net.InetAddress$2.lookupAllHostAddr(InetAddress.java:928)\n\tat java.net.InetAddress.getAddressesFromNameService(InetAddress.java:1323)\n\tat java.net.InetAddress.getAllByName0(InetAddress.java:1276)\n\tat java.net.InetAddress.getAllByName(InetAddress.java:1192)\n\tat java.net.InetAddress.getAllByName(InetAddress.java:1126)\n\tat org.apache.zookeeper.client.StaticHostProvider.<init>(StaticHostProvider.java:61)\n\tat org.apache.zookeeper.ZooKeeper.<init>(ZooKeeper.java:446)\n\tat org.apache.zookeeper.ZooKeeper.<init>(ZooKeeper.java:380)\n\tat org.I0Itec.zkclient.ZkConnection.connect(ZkConnection.java:70)\n\t... 21 more\n",
+              "state" : "FAILED",
+              "worker_id" : "replicator-1:28082"
+           }
+        }
+
+        Enterprise Replicator ha sido iniciado.
+
+
 
         docker@docker:~/scripts$ ./enterprisereplicator.sh producir ConClave 100000
 
         docker@docker:~/scripts$ ./enterprisereplicator.sh consumir dc1| wc -l
         100000
 
-        docker@docker:~/scripts$ ./enterprisereplicator.sh consumir dc2| wc -l
-        0
+        docker@docker:~/scripts$ ./enterprisereplicator.sh consumir dc2
+        Consumiendo los mensajes del tópico "topicreplicador" del dc2 ...
+        [2018-05-06 20:42:31,115] WARN Removing server dc2_kafka-1_1:9092 from bootstrap.servers as DNS resolution failed for dc2_kafka-1_1 (org.apache.kafka.clients.ClientUtils)
+        [2018-05-06 20:42:31,123] WARN Removing server dc2_kafka-2_1:9092 from bootstrap.servers as DNS resolution failed for dc2_kafka-2_1 (org.apache.kafka.clients.ClientUtils)
+        [2018-05-06 20:42:31,131] WARN Removing server dc2_kafka-3_1:9092 from bootstrap.servers as DNS resolution failed for dc2_kafka-3_1 (org.apache.kafka.clients.ClientUtils)
+        [2018-05-06 20:42:31,137] ERROR Unknown error when running consumer:  (kafka.tools.ConsoleConsumer$)
+        org.apache.kafka.common.KafkaException: Failed to construct kafka consumer
+            at org.apache.kafka.clients.consumer.KafkaConsumer.<init>(KafkaConsumer.java:717)
+            at org.apache.kafka.clients.consumer.KafkaConsumer.<init>(KafkaConsumer.java:597)
+            at org.apache.kafka.clients.consumer.KafkaConsumer.<init>(KafkaConsumer.java:579)
+            at kafka.consumer.NewShinyConsumer.<init>(BaseConsumer.scala:53)
+            at kafka.tools.ConsoleConsumer$.run(ConsoleConsumer.scala:69)
+            at kafka.tools.ConsoleConsumer$.main(ConsoleConsumer.scala:50)
+            at kafka.tools.ConsoleConsumer.main(ConsoleConsumer.scala)
+        Caused by: org.apache.kafka.common.config.ConfigException: No resolvable bootstrap urls given in bootstrap.servers
+            at org.apache.kafka.clients.ClientUtils.parseAndValidateAddresses(ClientUtils.java:60)
+            at org.apache.kafka.clients.consumer.KafkaConsumer.<init>(KafkaConsumer.java:654)
+            ... 6 more
 
         docker@docker:~/scripts$ ./LABORATORIO.sh iniciar todo
 
-
         docker@docker:~/scripts$ ./enterprisereplicator.sh consumir dc2| wc -l
         0
 
 
-        ESTA FALLANDO, NO SE REPLICA CORRECTAMENTE
+## 4-2-5 CONCLUSION
+
+
+ We expected to see in this PoC that, in the eventual datacenter 1 failure, once we spin off datacenter 2,
+ Enterprise Replicator would have started replicating the 100000 messages to the secondary datacenter 2,
+ rescuing the data, and cloning the commits and the offsets.
+
+ But instead of this, once the secondary Datacenter 2 is ready, Enterprise Replicator just replicates the topic
+ structure, but the data is not replicated at all. This even is not so clear, because although we can see the topic structure
+ in datacenter 2:
+
+         docker@docker:~/scripts$ docker exec -it dc2_kafka-2_1 kafka-topics --describe \
+                  --topic topicreplicador \
+                  --zookeeper dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181
+
+         Topic:topicreplicador	PartitionCount:3	ReplicationFactor:1	Configs:message.timestamp.type=CreateTime
+             Topic: topicreplicador	Partition: 0	Leader: 2	Replicas: 2	Isr: 2
+             Topic: topicreplicador	Partition: 1	Leader: 3	Replicas: 3	Isr: 3
+             Topic: topicreplicador	Partition: 2	Leader: 1	Replicas: 1	Isr: 1
+
+ No topic called "topicreplicador" is seen there when we list the topics
+
+         $ docker exec -it dc2_kafka-2_1 kafka-topics --list \
+            --zookeeper dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181
+         __consumer_offsets
+         replicator.config
+         replicator.offsets
+         replicator.status
+
+
+ Also, cloning the commits and the offsets will not be possible unless we include these in the Registry white list:
+
+     $ docker exec -it dc1_kafka-2_1 kafka-topics --list --zookeeper dc1_zookeeper-1_1:2181,dc1_zookeeper-2_1:2181,dc1_zookeeper-3_1:2181
+     __consumer_offsets
+     replicator.config
+     replicator.offsets
+     replicator.status
+     topicreplicador
+
+
