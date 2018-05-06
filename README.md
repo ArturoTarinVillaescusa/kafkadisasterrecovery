@@ -18,7 +18,7 @@
 
 4.2.4. [Enterprise Replicator disaster recovery test](###4-2-4-enterprise-replicator-disaster-recovery-test)
 
-5. [CONCLUSION][#5-conclusion]
+5. [CONCLUSION](#4-conclusion)
 
 
 # 1 Document objective
