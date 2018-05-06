@@ -6,19 +6,22 @@
 3. [Software Requirements](#3-software-requirements)
 4. [Exercises](#4-exercises)
 
-4.1. [Starting and Stopping your laboratory](#4-1-starting-and-stopping-your-laboratory)
+4.1. [Starting and Stopping your laboratory](##4-1-starting-and-stopping-your-laboratory)
 
 4.2. [Messaging Tests](##4-2-messaging-tests)
 
-4.2.1. [Publish-Subscribe messaging using command line Kafka scripts](#4-2-1-publish-subscribe-messaging-using-command-line-kafka-scripts)
+4.2.1. [Publish-Subscribe messaging using command line Kafka scripts](###4-2-1-publish-subscribe-messaging-using-command-line-kafka-scripts)
 
-4.2.2. [MirrorMaker message replication between clusters](#4-2-2-mirrormaker-replication-between-clusters)
+4.2.2. [MirrorMaker message replication between clusters](###4-2-2-mirrormaker-replication-between-clusters)
 
-4.2.3. [Enterprise Replicator message replication between clusters](#4-2-3-enterprise-replicator-replication-between-clusters)
+4.2.3. [Enterprise Replicator message replication between clusters](###4-2-3-enterprise-replicator-replication-between-clusters)
 
-4.2.4. [Enterprise Replicator disaster recovery test](#4-2-4-enterprise-replicator-disaster-recovery-test)
+4.2.4. [Enterprise Replicator disaster recovery test](###4-2-4-enterprise-replicator-disaster-recovery-test)
 
-## 1 Document objective
+5. [CONCLUSION][#5-conclusion]
+
+
+# 1 Document objective
 
  Following the steps of this workshop will give you a full Kafka cluster lab to run in your laptop.
  This lab will help you to test that verify that Enterprise Replicator and Registry allow to recover
@@ -34,14 +37,14 @@
 
  Let's go for it!
 
-## 2 Hardware Requirements
+# 2 Hardware Requirements
 
  The minimum hardware requirements are:
 
    - 16 Gb RAM (8 GB could be too low)
    - 30 GB disk
 
-## 3 Software Requirements
+# 3 Software Requirements
 
  In order to follow the exercises in this tutorial we will need to install in our laptop
  Docker, Docker Compose and JMeter.
@@ -137,7 +140,7 @@
      - Enterprise Replicator message replication between clusters
      - JMeter stress tests
 
-## 4-2-1 Publish-Subscribe messaging using command line Kafka scripts
+### 4-2-1 Publish-Subscribe messaging using command line Kafka scripts
 
  Our first test is to make sure through the scripts provided by Kafka, that the three brokers in our lab's cluster
  do really work in cluster mode.
@@ -215,7 +218,7 @@
         mensaje 3
         Processed a total of 3 messages
 
-## 4-2-2 MirrorMaker message replication between clusters
+### 4-2-2 MirrorMaker message replication between clusters
 
   To carry out the MirrorMaker tests we have provided the mirrormaker.sh script, located in the "scripts" folder
   from the Git repository. The script is self-descriptive:
@@ -304,7 +307,7 @@
             ^CProcessed a total of 10000 messages
 
 
-## 4-2-3 Enterprise Replicator message replication between clusters
+### 4-2-3 Enterprise Replicator message replication between clusters
 
  To carry out the Enterprise Replicator tests we have provided with the enterprisereplicator.sh script,
  located in the "scripts" folder of the Git repository.
@@ -408,7 +411,7 @@
                                 --topic topicreplicador --from-beginning
 
 
-## 4-2-4 Enterprise Replicator disaster recovery test
+### 4-2-4 Enterprise Replicator disaster recovery test
 
         docker@docker:~/scripts$ ./LABORATORIO.sh borrar
         Contenedores borrados
@@ -518,7 +521,7 @@
         0
 
 
-## 4-2-5 CONCLUSION
+# 5 CONCLUSION
 
 
  We expected to see in this PoC that, in the eventual datacenter 1 failure, once we spin off datacenter 2,

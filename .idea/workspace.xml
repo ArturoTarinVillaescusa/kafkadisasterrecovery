@@ -3,7 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="2b524dba-ff1b-4edc-9874-c6c71bc279fd" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/README.md" afterPath="$PROJECT_DIR$/README.md" />
-      <change beforePath="$PROJECT_DIR$/scripts/enterprisereplicator.sh" afterPath="$PROJECT_DIR$/scripts/enterprisereplicator.sh" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,8 +17,8 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
             <state split_layout="FIRST">
-              <first_editor relative-caret-position="233">
-                <caret line="540" column="1" lean-forward="false" selection-start-line="540" selection-start-column="1" selection-end-line="540" selection-end-column="1" />
+              <first_editor relative-caret-position="-306">
+                <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
                 <folding />
               </first_editor>
               <second_editor>
@@ -449,8 +448,8 @@
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;MarkdownPreviewEditor]">
         <state split_layout="FIRST">
-          <first_editor relative-caret-position="233">
-            <caret line="540" column="1" lean-forward="false" selection-start-line="540" selection-start-column="1" selection-end-line="540" selection-end-column="1" />
+          <first_editor relative-caret-position="-306">
+            <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
             <folding />
           </first_editor>
           <second_editor>
