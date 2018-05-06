@@ -41,6 +41,9 @@ iniciarcontenedores () {
          up -d --remove-orphans zookeeper-1 zookeeper-2 zookeeper-3 kafka-1 kafka-2 kafka-3 #kafka-connect-1 \
          #kafka-connect-2 kafka-connect-3 kafka-rest-1 kafka-rest-2 kafka-rest-3 edgenode
 
+    # Iniciamos Enterprise Replicator en el datacenter secundario
+   docker-compose -p dc2 -f $DOCKER_COMPOSE_REPLICATOR \
+         up -d --scale replicator-1=$NODOS_REPLICATOR --remove-orphans replicator
 
   # Iniciamos los datacenter de réplica
   for i in $(seq 2 $INDICE_REPLICACION_DATACENTER); do
@@ -90,6 +93,8 @@ estadocontenedores () {
     docker-compose -p dc1 -f $DOCKER_COMPOSE_ZK_KAFKA -f $DOCKER_COMPOSE_SCHEMA_REGISTRY \
        -f $DOCKER_COMPOSE_KAFKA_CONNECT -f $DOCKER_COMPOSE_KAFKA_REST -f $DOCKER_COMPOSE_REPLICATOR \
        -f $DOCKER_COMPOSE_DB2_ELK_MYSQL ps
+
+    docker-compose -p dc2 -f $DOCKER_COMPOSE_REPLICATOR ps
 
     for i in $(seq 2 $INDICE_REPLICACION_DATACENTER); do
         docker-compose -p dc$i -f $DOCKER_COMPOSE_ZK_KAFKA -f $DOCKER_COMPOSE_SCHEMA_REGISTRY \

@@ -418,7 +418,34 @@
          docker@docker:~$ docker exec -it dc2_kafka-3_1 \
                                 kafka-console-consumer \
                                 --bootstrap-server dc1_kafka-1_1:9092,dc1_kafka-2_1:9092,dc1_kafka-3_1:9092 \
-                                --topic topicoreplicador --from-beginning
+                                --topic topicreplicador --from-beginning
+
+
+## 4-2-4 Enterprise Replicator disaster recovery test
+
+        docker@docker:~/scripts$ ./LABORATORIO.sh borrar
+
+        docker@docker:~/scripts$ ./LABORATORIO.sh iniciar dc1
+
+        docker@docker:~/scripts$ ./enterprisereplicator.sh producir ConClave 100000
+
+        docker@docker:~/scripts$ ./enterprisereplicator.sh consumir dc1| wc -l
+        100000
+
+        docker@docker:~/scripts$ ./enterprisereplicator.sh consumir dc2| wc -l
+        0
+
+        docker@docker:~/scripts$ ./LABORATORIO.sh iniciar todo
+
+
+        docker exec -it dc2_kafka-3_1 \
+        kafka-console-consumer \
+        --bootstrap-server dc2_kafka-1_1:9092,dc2_kafka-2_1:9092,dc2_kafka-3_1:9092 \
+        --topic topicreplicador --from-beginning
+
+
+
+
 ## 4-2-4 JMeter stress tests
 
   An essential requirement to perform these tests is to have JMeter installed and configured

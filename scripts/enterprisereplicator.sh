@@ -1,15 +1,15 @@
 #!/bin/bash
 
 iniciarenterprisereplicator () {
-    echo Creamos el tópico \"topicoreplicador\" en el dc1 ...
+    echo Creamos el tópico \"topicreplicador\" en el dc1 ...
 
     docker exec -it dc1_kafka-1_1 kafka-topics --create \
-        --topic topicoreplicador --replication-factor 3 --partitions 3 \
+        --topic topicreplicador --replication-factor 3 --partitions 3 \
         --zookeeper dc1_zookeeper-1_1:2181,dc1_zookeeper-2_1:2181,dc1_zookeeper-3_1:2181
 
 
     docker exec -it dc1_kafka-2_1 kafka-topics --describe \
-        --topic topicoreplicador \
+        --topic topicreplicador \
         --zookeeper dc1_zookeeper-1_1:2181,dc1_zookeeper-2_1:2181,dc1_zookeeper-3_1:2181
 
     echo """
@@ -36,7 +36,7 @@ iniciarenterprisereplicator () {
 
     echo """
     Creamos el conector 'conector-replicador' llamando a Kafka Connect REST API. Obligamos a que se clonen las particiones \
-     es decir, las particiones del tópico \"topicoreplicador\" se replicarán en contenido y orden desde el Datacenter A al Datacenter B ...
+     es decir, las particiones del tópico \"topicreplicador\" se replicarán en contenido y orden desde el Datacenter A al Datacenter B ...
     """
 
     docker exec -it dc2_replicator_1 \
@@ -48,22 +48,19 @@ iniciarenterprisereplicator () {
                   "connector.class":"io.confluent.connect.replicator.ReplicatorSourceConnector",
                   "key.converter": "io.confluent.connect.replicator.util.ByteArrayConverter",
                   "value.converter": "io.confluent.connect.replicator.util.ByteArrayConverter",
-                  "src.zookeeper.connect": "dc1_zookeeper-1_1:2181",
+                  "src.zookeeper.connect": "dc1_zookeeper-1_1:2181,dc1_zookeeper-2_1:2181,dc1_zookeeper-3_1:2181",
                   "src.kafka.bootstrap.servers": "dc1_kafka-1_1:9092,dc1_kafka-2_1:9092,dc1_kafka-3_1:9092",
-                  "dest.zookeeper.connect": "dc2_zookeeper-1_1:2181",
-                  "topic.whitelist": "topicoreplicador",
+                  "dest.zookeeper.connect": "dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181",
+                  "topic.whitelist": "topicreplicador",
                   "topic.preserve.partitions": true}}'  \
-             http://localhost:28082/connectors | json_pp
+             http://dc2_replicator_1:28082/connectors | json_pp
 
     echo """
-    Comprobamos que Connector Replicator ha creado el tópico \"topicoreplicador\" en Datacenter B ...
+    Comprobamos que Connector Replicator ha creado el tópico \"topicreplicador\" en Datacenter B ...
     """
-    docker exec -it dc2_kafka-2_1 kafka-topics --list \
-    --zookeeper dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181 \
-    | grep topicoreplicador
 
     docker exec -it dc2_kafka-2_1 kafka-topics --describe \
-        --topic topicoreplicador \
+        --topic topicreplicador \
         --zookeeper dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181
 
     echo """
@@ -72,7 +69,7 @@ iniciarenterprisereplicator () {
 
     docker exec -it dc2_replicator_1 \
         curl -X GET \
-        http://localhost:28082/connectors/conector-replicador/status | json_pp
+        http://dc2_replicator_1:28082/connectors/conector-replicador/status | json_pp
 
     echo """
     Enterprise Replicator ha sido iniciado.
@@ -122,7 +119,7 @@ producir () {
                      --request-required-acks all \
                      --property "parse.key=true" --property "key.separator=:" \
                      --broker-list dc1_kafka-1_1:9092,dc1_kafka-2_1:9092,dc1_kafka-3_1:9092 \
-                     --topic topicoreplicador'; ;;
+                     --topic topicreplicador'; ;;
       "SinClave") echo """
                      Produciendo $nummensajes mensajes sin clave en el datacenter principal ...
                   """
@@ -130,22 +127,21 @@ producir () {
                                          bash -c "seq '$nummensajes' | kafka-console-producer \
                                          --request-required-acks 1 \
                                          --broker-list dc1_kafka-1_1:9092,dc1_kafka-2_1:9092,dc1_kafka-3_1:9092 \
-                                         --topic topicoreplicador && echo $nummensajes' mensajes producidos.'"; ;;
+                                         --topic topicreplicador && echo $nummensajes' mensajes producidos.'"; ;;
       *) ayuda; ;;
     esac
 
 }
 
 consumir () {
-    echo "Consumiendo los mensajes del tópico \"topicoreplicador\" del $1 ..."
-    bash -c "docker exec -it dc2_kafka-3_1 \
+    echo "Consumiendo los mensajes del tópico \"topicreplicador\" del $1 ..."
+    bash -c "docker exec -it $1_kafka-3_1 \
                kafka-console-consumer \
-               --topic topicoreplicador  \
+               --topic topicreplicador  \
                     --property 'print.timestamp=true' \
                     --property 'print.key=true' \
                     --property 'print.offset=true' \
-               --bootstrap-server dc2_kafka-1_1:9092,dc2_kafka-2_1:9092,dc2_kafka-3_1:9092 \
-               --partition 0 \
+               --bootstrap-server $1_kafka-1_1:9092,$1_kafka-2_1:9092,$1_kafka-3_1:9092 \
                --from-beginning"
 }
 

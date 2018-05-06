@@ -6,7 +6,7 @@ networks:
       name: ${RED:-confluent-network}
 services:
   replicator:
-    image: confluentinc/cp-enterprise-replicator:latest
+    image: confluentinc/cp-enterprise-replicator:${CP_VERSION:-latest}
     # restart: on-failure:3
     restart: ${REINICIAR:-always}
     hostname: ${DATACENTER}_replicator
