@@ -530,7 +530,7 @@
 
  But instead of this, once the secondary Datacenter 2 is ready, Enterprise Replicator just replicates the topic
  structure, but the data is not replicated at all. This even is not so clear, because although we can see the topic structure
- in datacenter 2:
+ in datacenter 2 ...
 
          docker@docker:~/scripts$ docker exec -it dc2_kafka-2_1 kafka-topics --describe \
                   --topic topicreplicador \
@@ -541,7 +541,7 @@
              Topic: topicreplicador	Partition: 1	Leader: 3	Replicas: 3	Isr: 3
              Topic: topicreplicador	Partition: 2	Leader: 1	Replicas: 1	Isr: 1
 
- No topic called "topicreplicador" is seen there when we list the topics
+ ... there isn't a topic called "topicreplicador" we list the topics
 
          $ docker exec -it dc2_kafka-2_1 kafka-topics --list \
             --zookeeper dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181
