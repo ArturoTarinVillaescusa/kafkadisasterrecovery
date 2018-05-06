@@ -379,7 +379,7 @@
             CreateTime:1525629947042	9999	9999
             CreateTime:1525629947042	10000	10000
 
-            Processed a total of 6667 messages
+            Processed a total of 10000 messages
 
 
          docker@docker:~/scripts$ ./enterprisereplicator.sh consumir dc2
