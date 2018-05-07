@@ -561,3 +561,30 @@
      topicreplicador
 
 
+ ALTERNATIVELY ..
+
+ It might be that our alternative to have Kafka running when the new Kafka datacenter arrives is just either:
+
+ * Cloning the three kafka broker nodes
+ or
+ * Copying the Kafka log directory of the three broker nodes from the Primary datacenter to the new datacenter:
+
+     root@dc1_kafka-2_1:/var/lib/kafka# ls data/
+     __consumer_offsets-0   __consumer_offsets-2   __consumer_offsets-30  __consumer_offsets-41  __consumer_offsets-8
+     __consumer_offsets-1   __consumer_offsets-20  __consumer_offsets-31  __consumer_offsets-42  __consumer_offsets-9
+     __consumer_offsets-10  __consumer_offsets-21  __consumer_offsets-32  __consumer_offsets-43  cleaner-offset-checkpoint
+     __consumer_offsets-11  __consumer_offsets-22  __consumer_offsets-33  __consumer_offsets-44  meta.properties
+     __consumer_offsets-12  __consumer_offsets-23  __consumer_offsets-34  __consumer_offsets-45  recovery-point-offset-checkpoint
+     __consumer_offsets-13  __consumer_offsets-24  __consumer_offsets-35  __consumer_offsets-46  replication-offset-checkpoint
+     __consumer_offsets-14  __consumer_offsets-25  __consumer_offsets-36  __consumer_offsets-47  topicreplicador-0
+     __consumer_offsets-15  __consumer_offsets-26  __consumer_offsets-37  __consumer_offsets-48  topicreplicador-1
+     __consumer_offsets-16  __consumer_offsets-27  __consumer_offsets-38  __consumer_offsets-49  topicreplicador-2
+     __consumer_offsets-17  __consumer_offsets-28  __consumer_offsets-39  __consumer_offsets-5
+     __consumer_offsets-18  __consumer_offsets-29  __consumer_offsets-4   __consumer_offsets-6
+     __consumer_offsets-19  __consumer_offsets-3   __consumer_offsets-40  __consumer_offsets-7
+
+
+
+ and finally, configure the offsets and the checkpoints so that consumers and producers can keep using the new datacenter.
+
+ We will open a Help Request to the Confluent team to get to know which is the best option for us.
