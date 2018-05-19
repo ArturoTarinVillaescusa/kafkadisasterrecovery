@@ -2,70 +2,62 @@
 
 iniciarmirrormaker () {
     echo """
-
     Iniciando MirrorMaker ...
-
-    Creamos el tópico "topicmirrormakerdcb" en el Datacenter dc1 ...
-
+    Creamos el tópico "topicmirrormaker" en kafka de mi laptop ...
     """
 
-    docker exec -it dc1_kafka-1_1 kafka-topics --create \
-        --topic topicmirrormakerdcb --replication-factor 3 --partitions 3 \
-        --zookeeper dc1_zookeeper-1_1:2181,dc1_zookeeper-2_1:2181,dc1_zookeeper-3_1:2181
+    /opt/kafka/bin/kafka-topics.sh --delete \
+        --topic topicmirrormaker \
+        --zookeeper broker1:2181,broker2:2181,broker3:2181
+
+    /opt/kafka/bin/kafka-topics.sh --create \
+        --topic topicmirrormaker --replication-factor 3 --partitions 3 \
+        --zookeeper broker1:2181,broker2:2181,broker3:2181
 
     echo
-    docker exec -it dc1_kafka-2_1 kafka-topics --describe \
-        --topic topicmirrormakerdcb \
-        --zookeeper dc1_zookeeper-1_1:2181,dc1_zookeeper-2_1:2181,dc1_zookeeper-3_1:2181
+    /opt/kafka/bin/kafka-topics.sh --describe \
+        --topic topicmirrormaker \
+        --zookeeper broker1:2181,broker2:2181,broker3:2181
 
     echo """
-
-    Creamos el tópico "topicmirrormakerdcb" en el Datacenter dc2 ...
-
+    Creamos el tópico "topicmirrormaker" en kafka de gcloud ...
     """
+    
+    /opt/kafka/bin/kafka-topics.sh --delete \
+        --topic topicmirrormaker \
+        --zookeeper 35.189.219.82:2181
 
-    docker exec -it dc2_kafka-1_1 kafka-topics --create \
-        --topic topicmirrormakerdcb --replication-factor 3 --partitions 3 \
-        --zookeeper dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181
+    /opt/kafka/bin/kafka-topics.sh --create \
+        --topic topicmirrormaker --replication-factor 1 --partitions 1 \
+        --zookeeper 35.189.219.82:2181
 
     echo
-    docker exec -it dc2_kafka-3_1 kafka-topics --describe \
-        --topic topicmirrormakerdcb \
-        --zookeeper dc2_zookeeper-1_1:2181,dc2_zookeeper-2_1:2181,dc2_zookeeper-3_1:2181
-
-    docker cp config/consumerdatacenterb.properties dc2_kafka-1_1:/etc/kafka
-    docker cp config/producerdatacenterb.properties dc2_kafka-1_1:/etc/kafka
+    /opt/kafka/bin/kafka-topics.sh --describe \
+        --topic topicmirrormaker \
+        --zookeeper 35.189.219.82:2181
 
     echo """
-        MirrorMaker ha sido arrancado en Datacenter dc2 ...
-
-        Puedes verificar el funcionamiento de la réplica de mensajes entre datacenter
+        MirrorMaker ha sido arrancado en local ...
+        Puedes verificar el funcionamiento de la réplica de mensajes entre local y GCloud
         abriendo dos nuevos terminales y lanzando en uno de ellos el comando
-
-        $ ./mirrormaker.sh consumir dc1
-
+        $ ./mirrormaker.sh consumir local
         y en el otro
-
-        $ ./mirrormaker.sh consumir dc2
-
+        $ ./mirrormaker.sh consumir cloud
         PULSA Ctrl+C para terminar MirrorMaker
     """
 
-    docker exec -it dc2_kafka-1_1 \
-              bash -c 'export KAFKA_HEAP_OPTS="-Xmx1024M -Xms1024M -XX:+HeapDumpOnOutOfMemoryError";
-              kafka-mirror-maker \
-              --consumer.config /etc/kafka/consumerdatacenterb.properties  \
-              --producer.config /etc/kafka/producerdatacenterb.properties \
-              --whitelist="topicmirrormakerdcb"'
+    export KAFKA_HEAP_OPTS="-Xmx1024M -Xms1024M -XX:+HeapDumpOnOutOfMemoryError"
+    /opt/kafka/bin/kafka-mirror-maker.sh \
+              --consumer.config config/consumermirrormaker.properties  \
+              --producer.config config/producermirrormaker.properties \
+              --whitelist="topicmirrormaker" &
 }
 
 producir () {
     if [ -z "$2" ]
       then
         echo """
-
            Falta indicar cuantos mensajes hay que producir
-
         """
         ayuda
         exit 0
@@ -73,41 +65,78 @@ producir () {
 
     nummensajes=$(($2))
 
-    echo "Produciendo $nummensajes mensajes en el tópico \"topicmirrormakerdcb\" del datacenter dc1 ..."
+    echo "Produciendo $nummensajes mensajes en el tópico \"topicmirrormaker\" de kafka de mi laptop ..."
 
     echo
     case $1 in
-      "ConClave") docker exec -it dc1_kafka-1_1 \
-                    bash -c 'rm /tmp/mensajes.txt;for i in $(seq '$nummensajes'); \
-                             do echo $(($i % 10)):$i >> /tmp/mensajes.txt; done';
-                  docker exec -it dc1_kafka-1_1 \
-                   bash -c 'cat /tmp/mensajes.txt | \
-                   kafka-console-producer \
+      "mensaje2bytesConClave") bash -c 'rm /tmp/mensajes.txt;for i in $(seq '$nummensajes'); \
+                           do echo $(($i % 10)):$i >> /tmp/mensajes.txt; done';
+                  bash -c 'cat /tmp/mensajes.txt | \
+                   /opt/kafka/bin/kafka-console-producer.sh \
                    --request-required-acks 1 \
                    --property "parse.key=true" --property "key.separator=:" \
-                   --broker-list dc1_kafka-1_1:9092,dc1_kafka-2_1:9092,dc1_kafka-3_1:9092 \
-                   --topic topicmirrormakerdcb'; ;;
-      "SinClave") docker exec -it dc1_kafka-1_1 \
-                       bash -c "seq '$nummensajes' | kafka-console-producer \
-                       --broker-list dc1_kafka-1_1:9092,dc1_kafka-2_1:9092,dc1_kafka-3_1:9092 \
-                       --topic topicmirrormakerdcb && echo '$nummensajes' mensajes producidos."; ;;
+                   --broker-list broker1:9092,broker2:9092,broker3:9092 \
+                   --topic topicmirrormaker'; ;;                           
+      "mensaje24kbytesConClave1a1")
+                  bash -c 'for i in $(seq '$nummensajes'); \
+                           do echo $(($i % 10)):"$(cat FALSOJSONMensaje1250SARSIMILARSIZE.xml)" | \
+                           /opt/kafka/bin/kafka-console-producer.sh \
+						   --request-required-acks 1 \
+						   --property "parse.key=true" --property "key.separator=:" \
+						   --broker-list broker1:9092,broker2:9092,broker3:9092 \
+						   --topic topicmirrormaker; \
+                           done'; ;;
+      "mensaje24kbytesConClave") 
+		  bash -c 'rm /tmp/mensajes.txt; \
+				   for i in $(seq '$nummensajes'); do \
+					 echo $(($i % 10)):"$(cat FALSOJSONMensaje1250SARSIMILARSIZE.xml)"  >> /tmp/mensajes.txt; \
+				     if (( $i % 10 == 0 )); \
+				     then \
+						 cat /tmp/mensajes.txt | /opt/kafka/bin/kafka-console-producer.sh \
+							 --request-required-acks 1 \
+							 --property "parse.key=true" --property "key.separator=:" \
+							 --broker-list broker1:9092,broker2:9092,broker3:9092 \
+							 --topic topicmirrormaker; \
+						 rm /tmp/mensajes.txt; \
+					 fi \
+				   done';
+		  bash -c 'cat /tmp/mensajes.txt | /opt/kafka/bin/kafka-console-producer.sh \
+					 --request-required-acks 1 \
+					 --property "parse.key=true" --property "key.separator=:" \
+					 --broker-list broker1:9092,broker2:9092,broker3:9092 \
+					 --topic topicmirrormaker'; ;;
+      "SinClave") bash -c "seq '$nummensajes' | \
+					/opt/kafka/bin/kafka-console-producer.sh \
+				   --broker-list broker1:9092,broker2:9092,broker3:9092 \
+				   --topic topicmirrormaker && echo '$nummensajes' mensajes producidos."; ;;
       *) ayuda; ;;
     esac
 
 }
 
 consumir () {
-    echo "Consumiendo los mensajes enviados al tópico \"topicmirrormakerdcb\" del Datacenter $1 ..."
-    bash -c "docker exec -it $1_kafka-1_1 \
-                                                    kafka-console-consumer \
-                                                    --property 'print.timestamp=true' \
-                                                    --property 'print.key=true' \
-                                                    --property 'print.offset=true' \
-                                                    --bootstrap-server dc1_kafka-1_1:9092,dc1_kafka-2_1:9092,dc1_kafka-3_1:9092 \
-                                                    --topic topicmirrormakerdcb"
+    echo "Consumiendo los mensajes enviados al tópico \"topicmirrormaker\" del Kafka en $1 ..."
+    
+    echo
+    case $1 in
+      "local") bash -c "/opt/kafka/bin/kafka-console-consumer.sh \
+						--property 'print.timestamp=true' \
+						--property 'print.key=true' \
+						--property 'print.offset=true' \
+						--bootstrap-server broker1:9092,broker2:9092,broker3:9092 \
+						--topic topicmirrormaker &"; ;;
+      "cloud") bash -c "/opt/kafka/bin/kafka-console-consumer.sh \
+						--property 'print.timestamp=true' \
+						--property 'print.key=true' \
+						--property 'print.offset=true' \
+						--bootstrap-server 35.189.219.82:9092 \
+						--topic topicmirrormaker &"; ;;
+      *) ayuda; ;;
+    esac
 }
 
 ayuda () {
+   clear
     echo """
    Forma de uso:
 
@@ -115,42 +144,56 @@ ayuda () {
 
    $ ./mirrormaker.sh iniciarmirrormaker
 
-   A continuación, abrir otra ventana y producir mensajes en el tópico "topicmirrormakerdcb" del datacenter principal usando el comando
+   A continuación, abrir otra ventana y producir mensajes en el tópico "topicmirrormaker" del Kafka local usando el comando
 
    $ ./mirrormaker.sh producir SinClave <nummensajes>
+
    o
-   $ ./mirrormaker.sh producir ConClave <nummensajes>
 
-   Abrir otra ventana más y consumir los mensajes replicados al tópico "topicmirrormakerdcb" del datacenter secundario usando el comando
-
-   $ ./mirrormaker.sh consumir dc1
+   $ ./mirrormaker.sh producir mensaje2bytesConClave <nummensajes>
    o
-   $ ./mirrormaker.sh consumir dc2
+   $ ./mirrormaker.sh producir mensaje24kbytesConClave <nummensajes>
+   o
+   $ ./mirrormaker.sh producir mensaje24kbytesConClave1a1 <nummensajes>
 
+   Abrir otra ventana más y consumir los mensajes replicados al tópico "topicmirrormaker" del Kafka en GCloud usando el comando
+
+   $ ./mirrormaker.sh consumir local
+
+   o
+
+   $ ./mirrormaker.sh consumir cloud
     """
+    
+for (( counter = 0; counter <= 5000; counter++ ))
+do
+    if (( counter % 1000 == 0 ))
+    then
+            echo "$(( counter / 1000 ))"
+    fi
+done    
  }
 
 
 
 case $1 in
   "iniciarmirrormaker") iniciarmirrormaker; ;;
-  "producir")  if [ $2 == "SinClave" ] || [ $2 == "ConClave" ]  ; then
+  "producir")  if [ $2 == "SinClave" ] || 
+                  [ $2 == "mensaje2bytesConClave" ]  || 
+				  [ $2 == "mensaje24kbytesConClave" ] || 
+				  [ $2 == "mensaje24kbytesConClave1a1" ] ; then
                     producir $2 $3
                else
                  echo """
-
-                 ERROR: falta indicar con el segundo parámetro si se está produciendo con clave o sin clave
-
+                 ERROR: falta indicar con el segundo parámetro si se está produciendo mensajes pequeños o grandes con clave, o mensajes pequeños sin clave
                  """
                  ayuda
                fi; ;;
-  "consumir")  if [ $2 == "dc1" ] || [ $2 == "dc2" ]  ; then
+  "consumir")  if [ $2 == "local" ] || [ $2 == "cloud" ]  ; then
                     consumir $2
                else
                  echo """
-
-                 ERROR: falta indicar con el segundo parámetro si se está consumiendo de dc1 o de dc2
-
+                 ERROR: falta indicar con el segundo parámetro si se está consumiendo de Kafka local local o de Kafka en GCloud
                  """
                  ayuda
                fi; ;;
