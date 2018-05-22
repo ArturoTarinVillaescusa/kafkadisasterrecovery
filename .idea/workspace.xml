@@ -1,44 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="71ca7fa8-b33e-43a5-a31a-8da8bf4b4a7b" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/LABORATORIO.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/LABORATORIOWINDOWS.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/Rest-Proxy-Consumidor.jmx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/Rest-Proxy-Productor-Bulk-Connect.jmx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/Rest-Proxy-Productor-Bulk.jmx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/Rest-Proxy-Productor-Incremental.jmx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/Rest-Proxy-Productor-Picos.jmx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/Rest-Proxy-Productor.jmx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/bulkDb2.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/LABORATORIO.conf" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/LINEA_BASE_CONSUMIDOR_ONLINE.properties" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/config/LINEA_BASE_CONSUMIDOR_ONLINE.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/LINEA_BASE_PRODUCTOR_BULK_CONNECT.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/LINEA_BASE_PRODUCTOR_BULK_ONLINE.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/LINEA_BASE_PRODUCTOR_ONLINE.properties" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/config/LINEA_BASE_PRODUCTOR_ONLINE.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/PRODUCTOR_INCREMENTAL.properties" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/config/PRODUCTOR_INCREMENTAL.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/PRODUCTOR_PICOS.properties" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/config/PRODUCTOR_PICOS.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/SPCT37_DIRECCIONES.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/connector-src-jdbc.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/consumerdatacenterb.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/createDB2sampleDB.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/crypto-tool-1.0.0-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/db2jcc.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/db2jcc4.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/db2jcc_license_cu.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/edgenodeconfig.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/kafka-connect-jdbc-3.2.0-arq3.0-SNAPSHOT.jar" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/producerdatacenterb.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/source-quickstart-db2.properties" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/config/testDB2.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/enterprisereplicator.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/enterprisereplicatorDeEdgeNode.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/mirrormaker.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/mirrormaker.sh" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/mirrormakerDeEdgeNode.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/randomly_putdown_machines.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/scripts/testJmeter.sh" beforeDir="false" afterPath="$PROJECT_DIR$/scripts/testKafka.sh" afterDir="false" />
-    </list>
+    <list default="true" id="71ca7fa8-b33e-43a5-a31a-8da8bf4b4a7b" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -65,7 +28,7 @@
       <file leaf-file-name="testKafka.sh" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/scripts/testKafka.sh">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-235">
+            <state relative-caret-position="77">
               <caret line="42" column="28" lean-forward="true" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
             </state>
           </provider>
@@ -210,7 +173,7 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="/media/arturotarin/TI31407100A/Users/Arturo/Documents/BIG DATA/VIDEOS/Machine Learning/PycharmProjects/seq2seq-chatbot" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
@@ -480,7 +443,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/scripts/testKafka.sh">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-235">
+        <state relative-caret-position="77">
           <caret line="42" column="28" lean-forward="true" selection-start-line="42" selection-start-column="28" selection-end-line="42" selection-end-column="28" />
         </state>
       </provider>
